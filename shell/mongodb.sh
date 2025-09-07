@@ -1,7 +1,7 @@
 # setup mongodb server
 
 #!/bin/bash
-set +x
+
 # ---- Colours ----
 red='\e[0;31m'
 green='\e[0;32m'
