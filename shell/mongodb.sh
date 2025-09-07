@@ -40,7 +40,7 @@ else
 fi
 # ---- validate function takesinput as exit status, what command they tried to install ----
 validate(){
-    if {[ $1 -ne 0]};then
+    if [ $1 -ne 0 ];then
         echo -e "${red}ERROR: $2 is failed. Please check the Logfile: $log_file for more information. ${reset}" | tee -a "$log_file"
         echo "Script execution failed at: $script_date" | tee -a "$log_file"
         exit 1
