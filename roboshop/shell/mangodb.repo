@@ -1,5 +1,0 @@
-[mangodb-org-7.0]
-name=MangoDB Repository
-baseurl=https://repo.mangodb.org/yum/redhat/9/mangodb-org/7.0/x86_64/
-enabled=1
-gpgcheck=0
