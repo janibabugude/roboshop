@@ -51,7 +51,7 @@ validate(){
 
 # ---- copy mongodb.repo file into /etc/yum.repos.d/mongodb.repo ----
 echo -n "Copying mongodb.repo into /etc/yum.repos.d/mongodb.repo " | tee -a "${log_file}"
-cp ~/mongodb.repo /etc/yum.repos.d/mongodb.repo &>> "${log_file}"
+cp mongodb.repo /etc/yum.repos.d/mongodb.repo &>> "${log_file}"
 validate $? "Copying mongodb.repo into /etc/yum.repos.d/mongodb.repo"
 # ---- Install mongodb ----
 echo -n "Installing mongodb server " | tee -a "${log_file}"
