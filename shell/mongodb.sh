@@ -10,7 +10,7 @@ reset='\e[0m'
 log_dir="/var/log/roboshop"
 script_date=$(date '+%d-%m-%Y %H:%M:%S')
 script_execution_date=$(date '+%d-%m-%Y %H:%M:%S')
-script_name=$(basename "$0")
+script_name=$((basename "$0") | sed 's/\.sh//')
 log_file="$log_dir/$script_name.log"
 
 # ---- Create log directory ----
@@ -40,6 +40,8 @@ else
 fi
 # ---- validate function takesinput as exit status, what command they tried to install ----
 validate(){
+    echo 
+    echo "============================================================================================="
     if [ $1 -ne 0 ];then
         echo -e "${red}ERROR: $2 is failed. Please check the Logfile: $log_file for more information. ${reset}" | tee -a "$log_file"
         echo "Script execution failed at: $script_date" | tee -a "$log_file"
@@ -50,34 +52,29 @@ validate(){
 }
 
 # ---- copy mongodb.repo file into /etc/yum.repos.d/mongodb.repo ----
-echo -n "Copying mongodb.repo into /etc/yum.repos.d/mongodb.repo " | tee -a "${log_file}"
+echo "Copying mongodb.repo into /etc/yum.repos.d/mongodb.repo " | tee -a "${log_file}"
 cp mongodb.repo /etc/yum.repos.d/mongodb.repo &>> "${log_file}"
 validate $? "Copying mongodb.repo into /etc/yum.repos.d/mongodb.repo"
 # ---- Install mongodb ----
-echo -n "Installing mongodb server " | tee -a "${log_file}"
+echo "Installing mongodb server " | tee -a "${log_file}"
 dnf install mongodb-org -y &>> "${log_file}"
 validate $? "Installing mongodb server"
 # ---- Update Listen IP address in /etc/mongod.conf file ----
-echo -n "Updating Listen IP address in /etc/mongod.conf file " | tee -a "${log_file}"
+echo "Updating Listen IP address in /etc/mongod.conf file " | tee -a "${log_file}"
 sed -i -e 's/127.0.0.1/0.0.0.0/g' /etc/mongod.conf &>> "${log_file}"
-validate $? "Uodating Listen IP address in /etc/mongod.conf file"
+validate $? "Updating Listen IP address in /etc/mongod.conf file"
 # ---- start and enable mongodb service ----
-echo -n "Starting and Enabling mongodb service " | tee -a "${log_file}"
+echo "Starting and Enabling mongodb service " | tee -a "${log_file}"
 systemctl start mongod &>> "${log_file}"
 systemctl enable mongod &>> "${log_file}"
 validate $? "Starting and Enabling mongodb service"
 # ---- Check mongodb service status ----
-echo -n "Checking mongodb service status " | tee -a "${log_file}"
+echo "Checking mongodb service status " | tee -a "${log_file}"
 systemctl status mongod &>> "${log_file}"
 validate $? "Checking mongodb service status"
 # ---- Print mongodb version ----
-echo -n "Printing mongodb version " | tee -a "${log_file}"
-mongod --version &>> "${log_file}"
-validate $? "Printing mongodb version"
+#echo "Printing mongodb version " | tee -a "${log_file}"
+##validate $? "Printing mongodb version"
 
 echo "Script completed successfully at: $(date '+%d-%m-%Y %H:%M:%S')" | tee -a "$log_file" 
 echo -e "${green}INFO: MongoDB setup completed successfully. ${reset}" | tee -a "$log_file"
-
-
-
-
