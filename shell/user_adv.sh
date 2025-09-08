@@ -1,4 +1,4 @@
-# --------------- Setup Catalogue server -------------------
+# --------------- Setup User server -------------------
 #!/bin/bash
 
 # ------------- COLOURS ------------
@@ -64,76 +64,52 @@ validate() {
 # -------- Main process start here --------
 echo "Disable Current nodejs module" | tee -a "$LOG_FILE"
 dnf module disable nodejs -y &>> "$LOG_FILE"
-validate $? "Disable Current nodejs module"
+validate $? "Disable Current nodejs module" | tee -a "$LOG_FILE"
 
 echo "Enable nodejs:20 module" | tee -a "$LOG_FILE"
 dnf module enable nodejs:20 -y &>> "$LOG_FILE"
-validate $? "Enable nodejs:20 module"
+validate $? "Enable nodejs:20 module" | tee -a "$LOG_FILE"
 
 echo "Installing nodejs module" | tee -a "$LOG_FILE"
 dnf module install nodejs -y &>> "$LOG_FILE"
-validate $? "Installing nodejs module"
+validate $? "Installing nodejs module" | tee -a "$LOG_FILE"
 
 echo "Creating /app directory" | tee -a "$LOG_FILE"
 mkdir -p "/app" &>> "$LOG_FILE"
-validate $? "Creating /app directory"
+validate $? "Creating /app directory" | tee -a "$LOG_FILE"
 
 echo "Creating roboshop as SYSTEM_USER" | tee -a "$LOG_FILE"
 if id roboshop &>> "$LOG_FILE"; then
     echo -e "${YELLOW}SKIP: User roboshop already exists.${RESET}" | tee -a "$LOG_FILE"
 else
     useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>> "$LOG_FILE"
-    validate $? "Creating roboshop as SYSTEM_USER"
+    validate $? "Creating roboshop as SYSTEM_USER"  | tee -a "$LOG_FILE"
 fi
 
 echo "Download the application code" | tee -a "$LOG_FILE"
-curl -L -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip &>> "$LOG_FILE"
-validate $? "Download the application code"
+curl -L -o /tmp/user.zip https://roboshop-artifacts.s3.amazonaws.com/user-v3.zip &>> "$LOG_FILE"
+validate $? "Download the application code" | tee -a "$LOG_FILE"
 
 echo "Unzip the application code to /app directory" | tee -a "$LOG_FILE"
-unzip -o /tmp/catalogue.zip -d /app &>> "$LOG_FILE"
-validate $? "Unzip the application code"
+unzip -o /tmp/user.zip -d /app &>> "$LOG_FILE"
+validate $? "Unzip the application code" | tee -a "$LOG_FILE"
 
 echo "Download the dependencies" | tee -a "$LOG_FILE"
 cd /app &>> "$LOG_FILE"
 rm -rf node_modules &>> "$LOG_FILE"
 npm install &>> "$LOG_FILE"
-validate $? "Download npm dependencies"
+validate $? "Download npm dependencies" | tee -a "$LOG_FILE"
 
-echo "Copying catalogue.service file into systemd" | tee -a "$LOG_FILE"
-cp catalogue.service /etc/systemd/system/catalogue.service &>> "$LOG_FILE"
-validate $? "Copy catalogue.service"
+echo "Copying user.service file into systemd" | tee -a "$LOG_FILE"
+cp user.service /etc/systemd/system/user.service &>> "$LOG_FILE"
+validate $? "Copy user.service" | tee -a "$LOG_FILE"
 
 systemctl daemon-reload &>> "$LOG_FILE"
-systemctl enable --now catalogue &>> "$LOG_FILE"
-validate $? "Enable and Start catalogue service"
+systemctl enable --now user &>> "$LOG_FILE"
+validate $? "Enable and Start user service" | tee -a "$LOG_FILE"
 
-echo "Copying mongodb.repo into yum.repos.d" | tee -a "$LOG_FILE"
-cp mongodb.repo /etc/yum.repos.d/mongodb.repo &>> "$LOG_FILE"
-validate $? "Copy mongodb.repo"
-
-echo "Installing mongodb-mongosh" | tee -a "$LOG_FILE"
-dnf install mongodb-mongosh -y &>> "$LOG_FILE"
-validate $? "Install mongodb-mongosh"
-
-echo "Load Master Data of Products into MongoDB" | tee -a "$LOG_FILE"
-mongosh --host mongodb.johndaws.shop </app/db/master-data.js &>> "$LOG_FILE"
-validate $? "Load Master Data of Products"
-
-echo "check data is loaded into mongodb or not" | tee -a "$LOG_FILE"
-mongosh --host mongodb.johndaws.shop <<EOF &>> "$LOG_FILE"
-show dbs
-use catalogue
-show collections
-db.products.find().pretty()
-EOF
-validate $? "Check data in MongoDB"
-
-echo "Verifying product data exists in MongoDB" | tee -a "$LOG_FILE"
-mongosh --quiet --host mongodb.johndaws.shop --eval "db.getSiblingDB('catalogue').products.countDocuments()" &>> "$LOG_FILE"
-validate $? "Verify product data exists in MongoDB"
 
 echo "=================================== THE END ===================================="
 echo "Script completed successfully at: $(date '+%d-%m-%Y %H:%M:%S')" | tee -a "$LOG_FILE"
-echo -e "${GREEN}INFO: Catalogue setup completed successfully.${RESET}" | tee -a "$LOG_FILE"
+echo -e "${GREEN}INFO: User setup completed successfully.${RESET}" | tee -a "$LOG_FILE"
 echo "=================================== THE END ===================================="
