@@ -14,7 +14,7 @@ RESET='\e[0m'
 
 # ---- Variables ----
 LOG_DIR="/var/log/roboshop"
-SCRIPT_NAME=$(basename "$0")
+SCRIPT_NAME=$(basename "$0" | sed -i 's/\.sh//')
 LOG_FILE="$LOG_DIR/$SCRIPT_NAME.log"
 START_TIME=$(date '+%d-%m-%Y %H:%M:%S')
 
@@ -58,7 +58,7 @@ validate() {
 # Copy repo file
 setup_repo() {
     echo "Copying MongoDB repo file..." | tee -a "$LOG_FILE"
-    cp ~/mongodb.repo /etc/yum.repos.d/mongodb.repo &>> "$LOG_FILE"
+    cp mongodb.repo /etc/yum.repos.d/mongodb.repo &>> "$LOG_FILE"
     validate $? "Copy MongoDB repo file"
 }
 
