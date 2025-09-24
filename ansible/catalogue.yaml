@@ -25,3 +25,7 @@
       home: /app
       comment: Roboshop System_user
       shell: /sbin/nologin
+  - name: Download the /tmp/catalogue.zip
+    ansible.builtin.get_url:
+      url: https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip
+      dest: /tmp/catalogue.zip
