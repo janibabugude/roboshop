@@ -1,5 +1,5 @@
 - name: Setup Mongodb Server
-  hosts: all
+  hosts: mongodb
   tasks:
   - name: copy mongodb.repo into /etc/yum.repos.d/mongodb.repo
     ansible.builtin.copy:

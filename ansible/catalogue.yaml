@@ -29,3 +29,12 @@
     ansible.builtin.get_url:
       url: https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip
       dest: /tmp/catalogue.zip
+  - name: Extract the catalogue.zip into /app
+    ansible.builtin.unarchive:
+      src: /tmp/catalogue.zip
+      dest: /app
+      remote_src: yes
+  - name: Install npm dependencies in /app
+    community.general.npm:
+      path: /app
+      state: present
