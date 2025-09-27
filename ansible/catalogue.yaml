@@ -38,3 +38,35 @@
     community.general.npm:
       path: /app
       state: present
+  - name: copy catalogue.service file into /etc/systemd/system/catalogue.service
+    ansible.builtin.copy:
+      src: catalogue.service
+      dest: /etc/systemd/system/catalogue.service
+  - name: daemon reload
+    ansible.builtin.systemd_service:
+      daemon_reload: true
+  - name: Enable & Restart the catalogue service
+    ansible.builtin.service:
+      name: catalogue.service
+      enabled: yes
+      state: restarted      
+  - name: copy mongodb.repo into /etc/yum.repos.d/mongodb.repo
+    ansible.builtin.copy:
+      src: mongodb.repo
+      dest: /etc/yum.repos.d/mongodb.repo
+  - name: Install mongodb-mongosh client
+    ansible.builtin.yum:
+      name: mongodb-mongosh
+      state: present
+
+  - name: check products loaded or not
+    ansible.builtin.command: mongosh --host localhost --eval 'db.getMongo().getDBNames().indexOf("catalogue")'
+    register: catalogue_output
+
+  - name: print catalogue output
+    ansible.builtin.debug:
+      msg: "{{ catalogue_output }}"
+
+  - name: load products
+    ansible.builtin.shell: mongosh --host localhost < /app/db/master-data.js
+    when: catalogue_output.stdout | int < 0
