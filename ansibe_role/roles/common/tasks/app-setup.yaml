@@ -1,5 +1,5 @@
 - name: "Ensure {{ app_user }} system user exists"
-  user:
+  ansible.builtin.user:
     name: "{{ app_user }}"
     state: present
     shell: /sbin/nologin
@@ -7,7 +7,7 @@
   register: roboshop_user_result
 
 - name: "Ensure {{ app_dir }} directory exists for {{ app_user }}"
-  file:
+  ansible.builtin.file:
     path: "{{ app_dir }}"
     state: directory
     owner: "{{ app_user }}"
@@ -16,7 +16,7 @@
   when: roboshop_user_result.changed
 
 - name: download and extract {{ server_name }} code in {{ app_dir }}
-  unarchive:
+  ansible.builtin.unarchive:
     src: "https://roboshop-artifacts.s3.amazonaws.com/{{ server_name }}-v3.zip"
     dest: "{{ app_dir }}"
     remote_src: yes
