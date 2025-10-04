@@ -1,0 +1,17 @@
+- name: disable nodejs
+  command: "dnf module disable nodejs -y"
+
+- name: enable nodejs:20
+  command: "dnf module enable node:20 -y"
+
+- name: install nodejs
+  dnf:
+  name: nodejs
+  state: present
+  update_cache: yes
+
+- name: install dependencies for {{ server_name }}
+  community.general.npm:
+  args:
+    chdir: "{{ app_dir }}"
+    state: present

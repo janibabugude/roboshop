@@ -1,0 +1,25 @@
+- name: nodejs setup
+  include_role:
+    name: common
+    tasks_from: nodejs
+
+- name: application setup
+  include_role:
+    name: common
+    tasks_from: app-setup 
+
+- name: systemd service setup
+  include_role:
+    name: common
+    tasks_from: systemd 
+
+- name: Copy mongo.repo file from mongodb role
+  copy:
+    src: "{{ role_path }}/../mongodb/files/mongodb.repo"
+    dest: /etc/yum.repos.d/mongodb.repo
+
+- name: install mongodb-mongosh client
+  ansible.builtin.yum:
+    name: mongodb-mongosh
+    state: present
+- name:

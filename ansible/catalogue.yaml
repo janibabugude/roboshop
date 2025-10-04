@@ -17,7 +17,7 @@
     ansible.builtin.file:
       path: /app
       state: directory
-      mode: '0644'
+      mode: '0755'
   - name: Create roboshop system_user
     ansible.builtin.user:
       name: roboshop
@@ -60,7 +60,7 @@
       state: present
 
   - name: check products loaded or not
-    ansible.builtin.command: mongosh --host localhost --eval 'db.getMongo().getDBNames().indexOf("catalogue")'
+    ansible.builtin.command: mongosh --host {{ MONGODB_HOST }} --eval 'db.getMongo().getDBNames().indexOf("catalogue")'
     register: catalogue_output
 
   - name: print catalogue output
@@ -68,5 +68,5 @@
       msg: "{{ catalogue_output }}"
 
   - name: load products
-    ansible.builtin.shell: mongosh --host localhost < /app/db/master-data.js
+    ansible.builtin.shell: mongosh --host {{ MONGODB_HOST }} < /app/db/master-data.js
     when: catalogue_output.stdout | int < 0

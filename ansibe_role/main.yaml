@@ -1,0 +1,5 @@
+- name: "setup {{ server_name }} server"
+  hosts: "{{ server_name }}"
+  become: true
+  roles: # this automatically looks for roles/mongodb/tasks/main.yaml
+    - "{{ server_name }}"
