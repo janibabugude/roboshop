@@ -50,9 +50,21 @@
     ansible.builtin.dnf:
       name: mysql
       state: "present"
-  - name: connect mysql database through only app user
-    community.mysql.mysql_info:
-      login_user: shipping
-      login_password: Roboshop@1
-      login_host: mysql.johndaws.shop
-      login_db: cities    # this is schema for mysql database
+#- name: connect mysql database through only app user
+#  community.mysql.mysql_info:
+#    login_user: root
+#    login_password: johndaws@84S
+#    login_host: mysql.johndaws.shop
+#    login_db: cities    # this is schema for mysql database
+  - name: import data
+    community.mysql.mysql_db:
+      name: all
+      login_user: "{{ MYSQL_ROOT_USER }}"
+      login_password: "{{ MYSQL_ROOT_PASSWORD }}"
+      login_host: "{{ MYSQL_HOST }}"
+      state: import
+      target: "{{ item }}"
+    loop:
+    - /app/db/schema.sql
+    - /app/db/app-user.sql
+    - /app/db/master-data.sql   

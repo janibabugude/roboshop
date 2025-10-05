@@ -1,0 +1,14 @@
+[Unit]
+Description = {{ server_name }} Service
+
+[Service]
+User={{ app_user }}
+// highlight- start
+Environment=CART_ENDPOINT={{ CART_HOST }}:8080
+Environment=DB_HOST={{ MYSQL_HOST }}
+// highlight-end
+ExecStart=/bin/java -jar /app/{{ server_name }}.jar
+SyslogIdentifier={{ server_name }}
+
+[Install]
+Wantedby=multi-user.target

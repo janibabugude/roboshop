@@ -1,0 +1,28 @@
+- name: disable {{ server_name }} current module
+  ansible.builtin.command: dnf module disable {{ server_name }} -y
+
+- name: enable {{ servername }}:7 module
+  ansible.builtin.command: dnf module enable {{ server_name }}:7 -y
+
+- name: install {{ server_name }}
+  ansible.builtin.yum:
+    name: "{{ server_name }}"
+    state: present
+  
+- name: modify content 127.0.0.1 in /etc/redis/redis.conf the redis config file
+  ansible.builtin.replace:
+    path: /etc/redis/redis.conf
+    regexp: '^\s*bindIp:.*$'
+    replace: '  bindIp: 0.0.0.0'
+    
+- name: Disable protected-mode in /etc/redis/redis.conf
+  ansible.builtin.lineinfile:
+    path: /etc/redis/redis.conf
+    regexp: 'protected-mode'
+    line: protected-mode no
+
+- name: enable and restart redis
+  ansible.builtin.service:
+    name: redis
+    state: restarted
+    enabled: yes

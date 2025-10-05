@@ -1,0 +1,12 @@
+- name: "install {{ server_name }} server"
+  ansible.builtin.dnf:
+    name: "{{ server_name }}-server"
+    state: present
+- name: "enable and restart {{ server_name }}"
+  ansible.buiiltin.service:
+    name: "{{ server_name }}d"
+    state: restarted
+    enabled: true
+- name: "set root password for {{ server_name }}"
+  ansible.builtin.command: mysql_secure_installation --set-root-pass "{{ MYSQL_ROOT_PASSWORD }}"
+

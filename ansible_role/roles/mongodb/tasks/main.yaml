@@ -1,7 +1,9 @@
-- name: copy mongodb repo file
+# Tasks file for mongodb
+
+- name: "copy {{ server_name }} repo file"
   copy:
-    src: files/mongodb.repo
-    dest: /etc/yum.repos.d/mongodb.repo
+    src: files/{{ server_name }}.repo
+    dest: /etc/yum.repos.d/{{ server_name }}.repo
 
 - name: "install mongodb-org"
   yum:
@@ -15,11 +17,11 @@
     state: started
     enabled: true
     
-- name: change bind_ip in mongodb config file
+- name: change bind_ip in mongod config file
   replace:
     path: /etc/mongod.conf
     regexp: '^\s*bindIp:.*$'
     replace: '  bindIp: 0.0.0.0'
 
-  notify: restart mongod
+  notify: restart mongod service
 

@@ -1,0 +1,16 @@
+
+# Vars file for frontend
+
+nginx_root_dir: /usr/share/nginx/html
+
+# Host details for various services used in frontend configuration file
+
+CATALOGUE_HOST: catalogue.johndaws.shop
+USER_HOST: user.johndaws.shop
+CART_HOST: cart.johndaws.shop
+SHIPPING_HOST: shipping.johndaws.shop
+PAYMENT_HOST: payment.johndaws.shop
+
+MONGODB_HOST: mongodb.johndaws.shop
+RABBITMQ_HOST: rabbitmq.johndaws.shop
+MYSQL_HOST: mysql.johndaws.shop

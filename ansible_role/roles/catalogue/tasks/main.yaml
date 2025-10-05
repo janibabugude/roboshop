@@ -6,12 +6,12 @@
 - name: nodejs setup
   include_role:
     name: common
-    tasks_from: nodejs
+    tasks_from: nodejs-setup
 
 - name: systemd service setup
   include_role:
     name: common
-    tasks_from: systemd 
+    tasks_from: systemd-setup
 
 - name: Copy mongo.repo file from mongodb role
   copy:
@@ -22,6 +22,7 @@
   ansible.builtin.yum:
     name: mongodb-mongosh
     state: present
+    
 - name: check products loaded or not
   ansible.builtin.command: mongosh --host {{ MONGODB_HOST }} --eval 'db.getMongo().getDBNames().indexOf("catalogue")'
   register: catalogue_output

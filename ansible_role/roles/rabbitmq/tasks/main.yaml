@@ -1,0 +1,24 @@
+- name: "copy {{ server_name }} repo file"
+  copy:
+    src: files/{{ server_name }}.repo
+    dest: /etc/yum.repos.d/{{ server_name }}.repo
+    mode: "0644"
+- name: "Install {{ server_name }}-server"
+  ansible.builtin.dnf:
+    name: "{{ server_name }}-server"
+    state: present
+- name: "Ensure {{ server_name }}-server is enabled and started"
+  ansible.builtin.service:
+    name: "{{ server_name }}-server"
+    state: restarted
+    enabled: yes
+- name: "create {{ server_name }} user and set permissions"
+  community.rabbitmq.rabbitmq_user:
+    user: roboshop 
+    password: roboshop123
+    permissions:
+      - vhost: /
+        configure_priv: .*
+        read_priv: .*
+        write_priv: .*
+    state: present

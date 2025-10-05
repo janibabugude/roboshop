@@ -1,0 +1,45 @@
+
+# Tasks file for frontend
+
+- name: disable nginx current module
+  ansible.builtin.command: dnf module disable nginx -y
+
+- name: enable nginx:1.24 module
+  ansible.builtin.command: dnf module enable nginx:1.24 -y
+
+- name: install nginx
+  ansible.builtin.yum:
+    name: nginx
+    state: present
+    update_cache: yes
+
+- name: start and enable nginx service
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: true
+
+- name: remove html content in "{{ nginx_root_dir }}" directory
+  ansible.builtin.file:
+    path: "{{ nginx_root_dir }}"
+    state: absent
+    recurse: yes
+- name: create directory /usr/share/nginx/html
+  ansible.builtin.file:
+    path: "{{ nginx_root_dir }}"
+    state: directory
+
+- name: "download and extract the {{ server_name }} code into {{ nginx_root_dir }}"
+  ansible.builtin.unarchive:
+    src: https://roboshop-artifacts.s3.amazonaws.com/{{ server_name }}-v3.zip
+    dest: "{{ nginx_root_dir }}"
+    remote_src: yes
+
+- name: copy {{ server_name }}.conf into /etc/nginx/conf.d/
+  ansible.builtin.copy:
+    src: "{{ server_name }}.conf"
+    dest: /etc/nginx/conf.d/{{ server_name }}.conf
+    mode: '0644'
+# Handlers,if any changes happen in the above task then only it will restart the nginx service      
+  notify:
+    - restart nginx service

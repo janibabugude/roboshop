@@ -1,0 +1,4 @@
+app_user: roboshop
+app_dir: /app
+REDIS_HOST: redis.johndaws.shop
+CATALOGUE_HOST: catalogue.johndaws.shop

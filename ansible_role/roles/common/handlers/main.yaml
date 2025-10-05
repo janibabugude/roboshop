@@ -1,0 +1,6 @@
+#handler file
+- name: restart {{ server_name }} service
+  ansible.builtin.service:
+    name: "{{ server_name }}"
+    state: restarted
+    enabled: yes  

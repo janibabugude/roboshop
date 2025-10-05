@@ -1,0 +1,13 @@
+- name: application setup
+  import_role:
+    name: common
+    tasks_from: app-setup.yaml
+
+- name: nodejs setup
+  import_role:
+    name: nodejs
+    tasks_from: nodejs-setup.yaml
+- name: systemd service setup
+  import_role:
+    name: cart
+    tasks_from: systemd-setup.yaml

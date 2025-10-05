@@ -1,0 +1,7 @@
+app_user: roboshop
+app_dir: /app
+CART_HOST: cart.johndaws.shop
+MYSQL_HOST: mysql.johndaws.shop 
+MYSQL_ROOT_USER: root
+MYSQL_ROOT_PASSWORD: johndaws@84S
+LOGIN_DB: cities

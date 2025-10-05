@@ -1,0 +1,3 @@
+CART_HOST: cart.johndaws.shop
+USER_HOST: user.johndaws.shop
+RABBITMQ_HOST: rabbitmq.johndaws.shop
