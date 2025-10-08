@@ -40,6 +40,7 @@
     src: "{{ server_name }}.conf"
     dest: /etc/nginx/conf.d/{{ server_name }}.conf
     mode: '0644'
+    validate: 'nginx -t -c %s'
 # Handlers,if any changes happen in the above task then only it will restart the nginx service      
   notify:
     - restart nginx service
